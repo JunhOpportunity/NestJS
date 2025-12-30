@@ -4,7 +4,7 @@ import { Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, Up
 export class UserModel{
   //ID
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   // 제목
   @Column()

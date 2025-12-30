@@ -27,7 +27,7 @@ export class AppController {
   async patchUser(@Param('id') id: string) {
     const user = await this.userRepository.findOne({
       where: {
-        id: parseInt(id),
+        id: id,
       },
     });
 
