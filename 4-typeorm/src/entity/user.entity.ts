@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
+import { ProfileModel } from "./profile.entitiy";
 
 @Entity()
 export class UserModel{
@@ -25,4 +26,10 @@ export class UserModel{
   @Column()
   @Generated('increment')
   additionalId: number;
+
+  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  profile: ProfileModel;
+
+  @Column()
+  email: string;
 }

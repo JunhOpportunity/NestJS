@@ -33,7 +33,13 @@ export class AppController {
 
     return this.userRepository.save({
       ...user,
-      title: user.title + '0',
     });
+  }
+
+  @Post()
+  async createUserAndProfile(){
+    const user = await this.userRepository.save({
+      email: 'asdf@codefactory.ai'
+    })
   }
 }
