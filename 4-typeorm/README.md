@@ -105,3 +105,87 @@ app.controller.ts 에서 요청 처리 함수 작성
 여기서 신경써야할 점이 있다. uuid 를 설정할 때는 number 타입이 아닌 string 타입으로 선언해주어야 한다는 것이다.
 
 이렇게 하지 않으면 에러가 발생한다.
+
+### `@Column({})` property
+
+```tsx
+@Column({ update: false })
+  createdAt: Date;
+```
+
+- length : 입력할 수 있는 글자의 길이
+- nullable : null 가능 여부
+- update : 업데이트 가능 여부
+- select : 데이터를 조회할 때 기본적으로 이 칼럼을 가져올 것인지 결정
+- default : 기본값
+- unique : PK처럼 중복되는 값이 없도록 하는 것
+
+### enum
+
+```tsx
+enum Role {
+	USER = 'user',
+	ADMIN = 'admin',
+}
+
+@Column({
+	type: 'enum',
+	enum: Role,
+	default: Role.USER,
+})
+role: Role;
+```
+
+### Entity Embedding
+
+> 상속과 비슷한 개념. 중복되는 내부 칼럼을 한 번에 작성해서 재사용한다.
+이 방법보다는 상속을 많이 사용한다.
+> 
+
+이때 재사용 되는 것들을 선언하는 테이블의 경우에는 Entity 라는 키워드를 붙여주지 않는다.
+
+```tsx
+// 재사용되는 것들 선언
+export class Name{
+  @Column()
+  first: string;
+
+  @Column()
+  last: string;
+}
+
+// 사용
+  @Column(() => Name)
+  name: Name;
+```
+
+### 테이블 상속
+
+일반적인 상속과 똑같은 개념과 유사한 로직으로 이루어져있다.
+
+Embedding 과 마찬가지로 @Entity 라는 키워드를 적어주지 않는다.
+
+```tsx
+export class BaseModel {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}
+
+@Entity()
+export class BookModel extends BaseModel{
+  @Column()
+  name: string;
+}
+```
+
+## Relationship
+
+레퍼런스 하는 id 칼럼은 항상 many 입장의 테이블에 들어가게 된다.
+
+둘 중 하나의 테이블은 상대방의 id 칼럼을 갖고 있어야 한다. (`@JoinColumn 사용`)
