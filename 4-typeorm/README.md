@@ -261,3 +261,67 @@ Relationship을 수행할 때는 연결된 테이블의 값들이 보여지는 �
   }
 ```
 
+### Many to Many Relationship
+
+![image.png](attachment:852552f5-b9bf-45a0-aa30-17e87438e4e2:image.png)
+
+서로 여러 개를 Reference 하고 있다.
+
+이 관계도 한 쪽에 Join 테이블을 생성해주어야 한다.
+
+다만 이때는 어디에 작성해주든 상관이 없다.
+
+```tsx
+export class PostModel{
+  @ManyToMany(() => TagModel, (tag) => tag.posts)
+  @JoinTable()
+  tags: TagModel[];
+}
+
+export class TagModel{
+  @ManyToMany(() => PostModel, (post) => post.tags)
+  posts: PostModel[];
+}
+```
+
+![image.png](attachment:594fc91e-eb01-42d8-9fde-b54f4bacc834:image.png)
+
+이때 신기한 점은, 테이블에 추가적으로 칼럼이 하나 생긴 것이 아니라 새 테이블이 하나 생성되었다는 점이다.
+
+각각의 테이블을 reference 하는 테이블을 새로 생성된 것을 확인할 수 있다.
+
+### Relation Options
+
+모든 관계가 같은 옵션을 사용한다.
+
+아래는 일단 OneToOne에 대한 예시
+
+```tsx
+@OneToOne(() => ProfileModel, (profile) => profile.user, {
+	eager: true,
+})
+```
+
+- eager (T/F) : find() 실행 할때마다 항상 같이 가져올 것들 결정.
+true로 할 경우에 아래 부분에 해당하는 relations 를 직접 적어주지 않아도 됨.
+    
+    ```tsx
+      @Get('users')
+      getUsers() {
+        return this.userRepository.find({
+          relations: {
+            profile: true,
+            posts: true,
+          },
+        });
+      }
+    ```
+    
+- cascade (T/F) : relation 을 한 번에 같이 저장할지 말지를 결정
+- nullable (T/F) : 기본 값은 True.
+- onDelete : 관계가 삭제됐을때
+    - ‘NO ACITON’: 아무것도 안함
+    - ‘CASCADE’ : 참조하는 Row도 같이 삭제
+    - ‘SET NULL’ : 참조하는 Row 에서 참조 id를 null로 변경
+    - ’SET DEFAULT’ : 기본 세팅으로 설정
+    - ‘RESTRICT’: 참조하고 있는 Row가 있는 경우 참조당하는 Row 삭제 불가
