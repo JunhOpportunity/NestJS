@@ -219,3 +219,45 @@ export class UserModel{
 
 +) ✋ OneToOne 관계를 생성해서 연결한 뒤에 app.module.ts 의 forFeature 부분에 ProfileModel 도 추가해주어야함.
 
+### One to Many & Many to One Relationship
+
+![image.png](attachment:b3b4116f-23c2-4190-adf4-057e3b19a773:image.png)
+
+Post를 예시로 들었는데, Post의 경우 여러 Post가 한 사람에게 종속되기 때문에 Many는 Post 라는 것을 알 수 있다.
+
+이 관계에서는 `@JoinColumn()` 키워드를 작성할 필요가 없다.
+
+왜냐하면 이 관계에서는 무조건 Many 에 해당하는 테이블에서 id를 들고있게 되기 때문이다. (테이블은 배열 형태, 즉 한 셀에 여러 개의 데이터를 갖고 있을 수 없기 때문)
+
+```tsx
+// post.entity.ts
+@Entity()
+export class PostModel{
+  @ManyToOne(() => UserModel, (user) => user.posts)
+  author: UserModel;
+}
+
+// user.entity.ts
+@Entity()
+export class PostModel{
+  @OneToMany(() => PostModel, (post) => post.author)
+  posts: PostModel[];
+}
+```
+
+여기서 주의할 점이 있다.
+
+Relationship을 수행할 때는 연결된 테이블의 값들이 보여지는 것에 대한 여부가 기본값으로 false 값이기 때문에 보여주고 싶은 데이터가 있다면 추가해주어야한다.
+
+```tsx
+  @Get('users')
+  getUsers() {
+    return this.userRepository.find({
+      relations: {
+        profile: true,
+        posts: true,
+      },
+    });
+  }
+```
+
