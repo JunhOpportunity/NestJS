@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, Generated, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, Generated, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn, VersionColumn } from "typeorm";
 import { ProfileModel } from "./profile.entitiy";
+import { PostModel } from "./post.entity";
 
 @Entity()
 export class UserModel{
@@ -8,8 +9,8 @@ export class UserModel{
   id: string;
 
   // 제목
-  @Column()
-  title: string;
+  // @Column()
+  // title: string;
 
   // 데이터 생성 일자
   @CreateDateColumn()
@@ -32,4 +33,7 @@ export class UserModel{
 
   @Column()
   email: string;
+
+  @OneToMany(() => PostModel, (post) => post.author)
+  posts: PostModel[];
 }
