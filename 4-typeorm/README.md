@@ -192,7 +192,7 @@ export class BookModel extends BaseModel{
 
 ### One to One Relationship
 
-![image.png](attachment:600cdc20-4d73-4f26-a8b6-d54fbd1329c2:image.png)
+![alt text](image.png)
 
 `@OneToOne` 키워드를 작성하고 해당 키워드의 프로퍼티에 연결할 칼럼을 명시해주면 된다.
 
@@ -221,7 +221,7 @@ export class UserModel{
 
 ### One to Many & Many to One Relationship
 
-![image.png](attachment:b3b4116f-23c2-4190-adf4-057e3b19a773:image.png)
+![alt text](image-1.png)
 
 Post를 예시로 들었는데, Post의 경우 여러 Post가 한 사람에게 종속되기 때문에 Many는 Post 라는 것을 알 수 있다.
 
@@ -262,8 +262,7 @@ Relationship을 수행할 때는 연결된 테이블의 값들이 보여지는 �
 ```
 
 ### Many to Many Relationship
-
-![image.png](attachment:852552f5-b9bf-45a0-aa30-17e87438e4e2:image.png)
+![alt text](image-2.png)
 
 서로 여러 개를 Reference 하고 있다.
 
@@ -284,7 +283,7 @@ export class TagModel{
 }
 ```
 
-![image.png](attachment:594fc91e-eb01-42d8-9fde-b54f4bacc834:image.png)
+![alt text](image-3.png)
 
 이때 신기한 점은, 테이블에 추가적으로 칼럼이 하나 생긴 것이 아니라 새 테이블이 하나 생성되었다는 점이다.
 
