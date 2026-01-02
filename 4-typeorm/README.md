@@ -189,3 +189,33 @@ export class BookModel extends BaseModel{
 레퍼런스 하는 id 칼럼은 항상 many 입장의 테이블에 들어가게 된다.
 
 둘 중 하나의 테이블은 상대방의 id 칼럼을 갖고 있어야 한다. (`@JoinColumn 사용`)
+
+### One to One Relationship
+
+![image.png](attachment:600cdc20-4d73-4f26-a8b6-d54fbd1329c2:image.png)
+
+`@OneToOne` 키워드를 작성하고 해당 키워드의 프로퍼티에 연결할 칼럼을 명시해주면 된다.
+
+여기서 주의할 점은 한 테이블은 상대방 태이블의 id를 갖고 있어야 한다는 점이다.
+
+이때 이 역할을 명시해 주는 것이 `@JoinColumn()` 키워드이다.
+
+```tsx
+// Profile.entity.ts
+@Entity()
+export class ProfileModel{
+  @OneToOne(() => UserModel, (user) => user.profile)
+  @JoinColumn()
+  user: UserModel;
+}
+
+// User.entity.ts
+@Entity()
+export class UserModel{
+  @OneToOne(() => ProfileModel, (profile) => profile.user)
+  profile: ProfileModel;
+}
+```
+
++) ✋ OneToOne 관계를 생성해서 연결한 뒤에 app.module.ts 의 forFeature 부분에 ProfileModel 도 추가해주어야함.
+
