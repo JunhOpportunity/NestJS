@@ -9,10 +9,18 @@ import { ProfileModel } from './entity/profile.entitiy';
 import { PostsModule } from './posts/posts.module';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
+import { UsersModule } from './users/users.module';
+import { UsersModel } from './users/entities/users.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserModel, ProfileModel, PostModel, TagModel]),
+    TypeOrmModule.forFeature([
+      UserModel,
+      ProfileModel,
+      PostModel,
+      TagModel,
+      UsersModel,
+    ]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: '127.0.0.1',
@@ -29,10 +37,12 @@ import { TagModel } from './entity/tag.entity';
         ProfileModel,
         PostModel,
         TagModel,
+        UsersModel,
       ],
       synchronize: true,
     }),
     PostsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
