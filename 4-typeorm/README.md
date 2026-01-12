@@ -679,3 +679,42 @@ export class MinLengthPipe implements PipeTransform {
 // 커스텀 파이프 사용
 @Body('password', new MaxLengthPipe(8), new MinLengthPipe(3))
 ```
+
+## Base Model
+
+> 자주 사용될 것 같은 엔티티들을 모아서 재사용 하는 것
+> 
+
+```tsx
+// common 리소스 생성한 뒤에 entity 파일에 작성
+import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+
+export abstract class BaseModel {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @UpdateDateColumn()
+  createdAt: Date;
+
+  @CreateDateColumn()
+  updatedAt: Date;
+}
+```
+
+```tsx
+// 사용
+export class UsersModel extends BaseModel{}
+```
+
+## Guard
+
+> 특정 요청이 컨트롤러에 도달하기 전에, 그 요청을 보낸 사람이 ‘들어올 자격이 있는지’ 를 결정하는 역할.
+> 
+
+예를 들어, 토큰 형식 자체에 문제가 발생한 경우 토큰 검증 단계를 원천 차단함.
+
+또는 로그인 여부 확인과 권한 확인 등이 있음.
+
+### 특징
+
+가드는 모든 미들웨어가 실행된 후, Interceptos나 Pipes가 실행되기 전에 위치한다.
