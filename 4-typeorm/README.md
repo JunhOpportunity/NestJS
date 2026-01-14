@@ -718,3 +718,75 @@ export class UsersModel extends BaseModel{}
 ### 특징
 
 가드는 모든 미들웨어가 실행된 후, Interceptos나 Pipes가 실행되기 전에 위치한다.
+
+## Custom Decorator
+
+Access Token을 헤더에 넣은 상태로 요청을 보내면 로그인한 사용자라는 것을 알 수 있다.
+
+## Postman
+
+Environments 페이지 → 새 환경 변수 선언 → 사용
+
+```tsx
+http://{{host}}/posts
+```
+
+## Class Validator
+
+```tsx
+$ npm i class-validator
+$ npm i class-transformer
+```
+
+### DTO
+
+> Body의 값들을 하나의 클래스로 묶어서 관리하는 방법.
+> 
+
+```tsx
+// 기존 코드
+@Post()
+postPosts(
+	@User('id') userId: number,
+	@Body('title') title: string,
+	@Body('content') content: string
+) {}
+```
+
+```tsx
+// DTO 작성
+// src/posts/dto/create-post.dto.ts
+export class CreatePostDto {
+	@IsString({
+		message : "유효성 검사에 걸렸을 때 보여질 메세지"
+	})
+  title: string;
+  
+  @IsString()
+  content: string;
+}
+
+// 또는 더 간단하게 PickType 사용해서 구현 가능
+export class CreatePostDto extends PickType
+(PostModel, ['title', 'content']) {}
+```
+
+```tsx
+// 적용 코드
+@Post()
+postPosts(
+	@User('id') userId: number,
+	@Body() body: CreatePostDto,
+) {}
+```
+
+```tsx
+// main.ts 에 작성해서 모든 코드에 Validation 적용
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.useGlobalPipes(new ValidationPipe())
+
+  await app.listen(process.env.PORT ?? 3000);
+}
+```
