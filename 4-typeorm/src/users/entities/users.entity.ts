@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, Up
 import { RolesEnum } from '../const/roles.const';
 import { PostModel } from 'src/entity/post.entity';
 import { BaseModel } from 'src/entity/inheritance.entity';
+import { IsEmail, IsString, Length } from 'class-validator';
 
 @Entity()
 export class UsersModel extends BaseModel  {
@@ -9,14 +10,19 @@ export class UsersModel extends BaseModel  {
     length: 20,
     unique: true,
   })
+  @IsString()
+  @Length(1, 20)
   nickname: string;
 
   @Column({
     unique: true,
   })
+  @IsString()
+  @IsEmail()
   email: string;
 
   @Column()
+  @Length(3, 8)
   password: string;
 
   @Column({
