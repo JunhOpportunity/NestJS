@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer';
 import { IsIn, IsNumber, IsOptional } from 'class-validator';
 
 export class PaginatePostDto {
@@ -7,10 +8,14 @@ export class PaginatePostDto {
   @IsOptional()
   where__id_more_than?: number; // 아무것도 없으면 0이라는 가정.
 
-  // 정렬
-  @IsIn(['ASC'])
+  @IsNumber()
   @IsOptional()
-  order__createdAt?: 'ASC' = 'ASC';
+  where__id_less_than?: number; 
+
+  // 정렬
+  @IsIn(['ASC', 'DESC'])
+  @IsOptional()
+  order__createdAt?: 'ASC' | 'DESC' = 'ASC';
 
   // 몇 개의 데이터를 응답으로 가져올지
   @IsNumber()
