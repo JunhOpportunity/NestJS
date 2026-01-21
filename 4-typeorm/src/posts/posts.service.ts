@@ -4,12 +4,14 @@ import { FindOptionsWhere, LessThan, MoreThan, Repository } from 'typeorm';
 import { create } from 'domain';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HOST, PROTOCOL } from 'src/common/const/env.const';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsModel)
     private readonly postsRepository: Repository<PostsModel>,
+    private readonly commonService: CommonService,
   ) {}
 
   getAllPosts() {
@@ -17,18 +19,42 @@ export class PostsService {
   }
 
   async paginatePosts(dto: PaginatePostDto) {
+    return this.commonService.paginate(dto, this.postsRepository, {}, 'posts');
+    // if (dto.page) {
+    //   return this.pagePaginatePosts(dto);
+    // } else {
+    //   return this.cursorPaginatePosts(dto);
+    // }
+  }
+
+  async pagePaginatePosts(dto: PaginatePostDto) {
+    const [posts, count] = await this.postsRepository.findAndCount({
+      order: {
+        createdAt: dto.order__createdAt,
+      },
+      skip: (dto.page - 1) * dto.take,
+      take: dto.take,
+    });
+
+    return {
+      data: posts,
+      total: count,
+    };
+  }
+
+  async cursorPaginatePosts(dto: PaginatePostDto) {
     const where: FindOptionsWhere<PostsModel> = {};
 
-    if(dto.where__id_less_than) {
-      where.id = LessThan(dto.where__id_less_than);
-    } else if(dto.where__id_more_than) {
-      where.id = MoreThan(dto.where__id_more_than);
+    if (dto.where__id__less_than) {
+      where.id = LessThan(dto.where__id__less_than);
+    } else if (dto.where__id__more_than) {
+      where.id = MoreThan(dto.where__id__more_than);
     }
 
     const posts = await this.postsRepository.find({
       where: {
         // 더 크다, 더 많다
-        id: MoreThan(dto.where__id_more_than ?? 0),
+        id: MoreThan(dto.where__id__more_than ?? 0),
       },
       order: {
         createdAt: dto.order__createdAt,
@@ -39,7 +65,10 @@ export class PostsService {
     // 해당되는 포스트가 0개 이상이면
     // 마지막 포스트를 가져오고
     // 아니면 null을 반환
-    const lastItem = posts.length > 0 && posts.length === dto.take ? posts[posts.length - 1] : null;
+    const lastItem =
+      posts.length > 0 && posts.length === dto.take
+        ? posts[posts.length - 1]
+        : null;
 
     const nextUrl = lastItem && new URL(`${PROTOCOL}://${HOST}/posts`);
 
@@ -59,7 +88,7 @@ export class PostsService {
 
       let key = null;
 
-      if(dto.order__createdAt === 'ASC') {
+      if (dto.order__createdAt === 'ASC') {
         key = 'where__id_more_than';
       } else {
         key = 'where__id_less_than';
