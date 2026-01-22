@@ -908,3 +908,98 @@ export class PostsService {
     return this.postsService.paginatePosts(query);
   }
 ```
+
+### Page based Pagination
+
+> 커서 기반 페이지네이션에 비해 굉장히 간단하다.
+> 
+
+```tsx
+  async pagePaginatePosts(dto: PaginatePostDto) {
+    const [posts, count] = await this.postsRepository.findAndCount({
+      order: {
+        createdAt: dto.order__createdAt,
+      },
+      skip: (dto.page - 1) * dto.take,
+      take: dto.take,
+    });
+
+    return {
+      data: posts,
+      total: count,
+    };
+  }
+```
+
+## Config 모듈 사용하기
+
+1. 환경 설정
+
+```tsx
+$ npm i @nestjs/config
+```
+
+1. .env 파일 작성
+2. app.moudle.ts 수정
+    
+    ```tsx
+    @Module({
+      imports: [
+        ConfigModule.forRoot({
+          envFilePath: '.env',
+          isGlobal: true,
+        }),
+      ]
+    })
+    ```
+    
+3. 적용
+
+```tsx
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly configService: ConfigService,
+  ) {}
+  
+  // ...
+  
+  secret: this.configService.get<string>(ENV_JWT_SECRET_KEY)
+```
+
+- 하드 코딩된 내용들도 .env 파일에서 관리하는 것이 좋다.
+
+# ✋ 파일 업로드
+
+## Multer (클래식한 방법)
+
+```tsx
+$ npm i multer @types/multer uuid @types/uuid
+```
+
++) 파일 확장자명 가져오기
+
+extname을 사용해 xxx.jpg => .jpg 추출
+
+```tsx
+const ext = extname(file.originalname);
+
+fileFilter: (req, file, cb) => {
+  // cb(에러, boolean): 콜백함수
+  // 첫 번째 파라미터는 에러 객체에 대한 정보
+  // 두 번째 파라미터는 파일을 받을지 말지 boolean으로 허용 여부
+  // 파일 확장자 검사
+  // extname을 사용해 xxx.jpg => .jpg 추출
+  const ext = extname(file.originalname);
+  if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png') {
+    return cb(new Error('Only images are allowed'), false);
+  }
+  return cb(null, true);
+},
+```
+
++) 현재 프로젝트를 실행한 위치
+
+```tsx
+process.cwd();
+```
