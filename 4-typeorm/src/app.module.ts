@@ -6,7 +6,7 @@ import { UserModel } from './entity/user.entity';
 import { StudentModel, TeacherModel } from './entity/person.entity';
 import { BookModel, CarModel } from './entity/inheritance.entity';
 import { ProfileModel } from './entity/profile.entitiy';
-import { PostsModule } from './posts/posts.module';
+// import { PostsModule } from './posts/posts.module';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
 import { UsersModule } from './users/users.module';
@@ -15,6 +15,9 @@ import { AuthModule } from './auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { ENV_DB_DATABASE_KEY, ENV_DB_HOST_KEY, ENV_DB_PASSWORD_KEY, ENV_DB_PORT_KEY, ENV_DB_USERNAME_KEY } from './common/const/env-keys.const';
+import { ImageModel } from './common/entity/image.entity';
+import { ChatsModule } from './chats/chats.module';
+import { ChatsModel } from './chats/entity/chats.entity';
 
 @Module({
   imports: [
@@ -32,7 +35,7 @@ import { ENV_DB_DATABASE_KEY, ENV_DB_HOST_KEY, ENV_DB_PASSWORD_KEY, ENV_DB_PORT_
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env[ENV_DB_HOST_KEY],
-      port: parseInt(process.env.[ENV_DB_PORT_KEY]),
+      port: parseInt(process.env[ENV_DB_PORT_KEY]),
       username: process.env[ENV_DB_USERNAME_KEY],
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
@@ -46,12 +49,15 @@ import { ENV_DB_DATABASE_KEY, ENV_DB_HOST_KEY, ENV_DB_PASSWORD_KEY, ENV_DB_PORT_
         PostModel,
         TagModel,
         UsersModel,
+        ImageModel,
+        ChatsModel
       ],
       synchronize: true,
     }),
-    PostsModule,
+    // PostsModule,
     UsersModule,
     AuthModule,
+    ChatsModule,
   ],
   controllers: [AppController],
   providers: [
