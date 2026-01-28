@@ -14,10 +14,17 @@ import { UsersModel } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
-import { ENV_DB_DATABASE_KEY, ENV_DB_HOST_KEY, ENV_DB_PASSWORD_KEY, ENV_DB_PORT_KEY, ENV_DB_USERNAME_KEY } from './common/const/env-keys.const';
+import {
+  ENV_DB_DATABASE_KEY,
+  ENV_DB_HOST_KEY,
+  ENV_DB_PASSWORD_KEY,
+  ENV_DB_PORT_KEY,
+  ENV_DB_USERNAME_KEY,
+} from './common/const/env-keys.const';
 import { ImageModel } from './common/entity/image.entity';
 import { ChatsModule } from './chats/chats.module';
 import { ChatsModel } from './chats/entity/chats.entity';
+import { MessagesModel } from './chats/messages/entity/messages.entity';
 
 @Module({
   imports: [
@@ -50,7 +57,8 @@ import { ChatsModel } from './chats/entity/chats.entity';
         TagModel,
         UsersModel,
         ImageModel,
-        ChatsModel
+        ChatsModel,
+        MessagesModel,
       ],
       synchronize: true,
     }),

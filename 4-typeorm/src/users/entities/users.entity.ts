@@ -5,6 +5,7 @@ import { BaseModel } from 'src/entity/inheritance.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
 import { Exclude } from 'class-transformer';
 import { ChatsModel } from 'src/chats/entity/chats.entity';
+import { MessagesModel } from 'src/chats/messages/entity/messages.entity';
 
 @Entity()
 export class UsersModel extends BaseModel  {
@@ -40,4 +41,8 @@ export class UsersModel extends BaseModel  {
   @ManyToMany(() => ChatsModel, (chat) => chat.users)
   @JoinTable()
   chats: ChatsModel[];
+
+  @OneToMany(() => MessagesModel, (message) => message.author)
+  messages: MessagesModel;
+
 }
